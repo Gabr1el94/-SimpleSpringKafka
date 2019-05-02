@@ -1,13 +1,19 @@
 package com.gabrieldev.classes;
 
+import java.io.Serializable;
+
 /**
  *
  * @author gabrieldev
  */
 
-public class Student {
+public class Student implements Serializable{
     
-    private int id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7351726388400377833L;
+	private int id;
     private String nome;
 
     public Student() {

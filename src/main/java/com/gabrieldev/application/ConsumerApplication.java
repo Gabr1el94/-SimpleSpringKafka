@@ -5,12 +5,13 @@
  */
 package com.gabrieldev.application;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+import com.gabrieldev.classes.Student;
 
 /**
  *
@@ -22,25 +23,24 @@ public class ConsumerApplication {
 		String topic= "testProducer";
 		
 		Properties prop = new Properties(); 
-		prop.put("bootstrap.servers", "localhost:9092");
+		prop.put("bootstrap.servers", "0.0.0.0:9092");
 		prop.put("key.deserializer", "com.gabrieldev.classes.StudentDeserializer");
 		prop.put("value.deserializer", "com.gabrieldev.classes.StudentDeserializer");
         prop.put("auto.offset.reset","earliest");
         prop.put("group.id","group_text");
         
-        try (KafkaConsumer<String, byte[]> consumer = new KafkaConsumer<>(prop)) {
+        try (KafkaConsumer<byte[], Object> consumer = new KafkaConsumer<>(prop)) {
             consumer.subscribe(Collections.singletonList(topic));
-                
-		ConsumerRecords<String, byte[]> messages = consumer.poll(100);
-                for (ConsumerRecord<String, byte[]> message : messages) {
-                    try {
-                        String msg = new String(message.value());
-                        System.out.println("Message received:" + msg.toString());
-                    } catch (Exception e) {
-                       e.printStackTrace();
-                    }
+                ConsumerRecords<byte[], Object> messages = consumer.poll(100);
+                for (ConsumerRecord<byte[], Object> message : messages) {
+	        	    	if (message.value() != null) {
+	        	    		Student user = (Student) message.value();
+	        	    		System.out.println("user.id: "+user.getId());
+	        		    	System.out.println("user.nome: "+user.getNome());	
+	        	    	}
+                	
+                     System.out.println("TESTE:"+message.value().toString());
                 }
-    
         } catch (Exception e) {
             e.printStackTrace();
         }
